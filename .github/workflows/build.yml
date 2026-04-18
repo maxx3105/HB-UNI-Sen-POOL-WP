@@ -35,9 +35,8 @@ jobs:
           arduino-cli lib install "EnableInterrupt"
           arduino-cli lib install "Low-Power"
           arduino-cli lib install "LiquidCrystal I2C"
-          # AskSin++ manuell installieren
-          git clone https://github.com/pa-pa/AskSinPP \
-            ~/Arduino/libraries/AskSinPP
+          git clone https://github.com/pa-pa/AskSinPP ~/Arduino/libraries/AskSinPP
+          git clone https://github.com/PhilSo/PCF8583 ~/Arduino/libraries/PCF8583
 
       - name: Compile sketch
         run: |
