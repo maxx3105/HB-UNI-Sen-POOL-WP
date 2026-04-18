@@ -35,8 +35,10 @@ jobs:
           arduino-cli lib install "EnableInterrupt"
           arduino-cli lib install "Low-Power"
           arduino-cli lib install "LiquidCrystal I2C"
-          git clone https://github.com/pa-pa/AskSinPP ~/Arduino/libraries/AskSinPP
-          git clone https://github.com/PhilSo/PCF8583 ~/Arduino/libraries/PCF8583
+          git clone https://github.com/pa-pa/AskSinPP.git \
+            $HOME/Arduino/libraries/AskSinPP
+          git clone https://github.com/xoseperez/pcf8583.git \
+            $HOME/Arduino/libraries/PCF8583
 
       - name: Compile sketch
         run: |
