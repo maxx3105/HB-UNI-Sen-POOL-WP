@@ -1,0 +1,55 @@
+name: Arduino CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "**.ino"
+      - ".github/workflows/build.yml"
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install MightyCore board support
+        run: |
+          arduino-cli core update-index --additional-urls \
+            https://mcudude.github.io/MightyCore/package_MCUdude_MightyCore_index.json
+          arduino-cli core install MightyCore:avr --additional-urls \
+            https://mcudude.github.io/MightyCore/package_MCUdude_MightyCore_index.json
+
+      - name: Install libraries
+        run: |
+          arduino-cli lib install "EnableInterrupt"
+          arduino-cli lib install "Low-Power"
+          arduino-cli lib install "LiquidCrystal I2C"
+          # AskSin++ manuell installieren
+          git clone https://github.com/pa-pa/AskSinPP \
+            ~/Arduino/libraries/AskSinPP
+
+      - name: Compile sketch
+        run: |
+          arduino-cli compile \
+            --fqbn MightyCore:avr:1284:pinout=standard,clock=8MHz_internal \
+            HB-UNI-Sen-POOL-WP.ino \
+            --warnings default \
+            --output-dir build/
+
+      - name: Upload hex artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HB-UNI-Sen-POOL-WP-hex
+          path: build/*.hex
+          retention-days: 30
